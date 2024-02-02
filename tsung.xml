@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/share/tsung/tsung-1.0.dtd">
+<tsung loglevel="notice" version="1.0">
+ 
+  <!-- Client Configuration -->
+<clients>
+   <client host="www.test.friendhost.net" type="machine"  maxusers="150" cpu="1" weight="2">
+      <ip value="127.0.0.2" scan="false"/>
+   </client>
+   <!--client host="memphis" weight="3" maxusers="150" cpu="2">
+      <ip value="172.67.195.51" scan="false"/>
+   </client-->
+</clients>
+  <!--Server Configuration -->
+  <servers>
+    <server host="127.0.0.2" port="80" type="tcp"/>
+  </servers>
+
+  <!-- Load Configuration -->
+  <load>
+    <arrivalphase phase="1" duration="10" unit="second">
+      <users maxnumber="150" interarrival="0.01" unit="second"/>
+    </arrivalphase>
+  </load>
+
+  <!-- Jabber Parameters -->
+  <options>
+    <option type="ts_jabber" name="global_number" value="100"/>
+  </options>
+
+  <!-- Session Configuration -->
+  <sessions>
+    <session probability="100" name="jabber-plain" type="ts_jabber">
+      <request>
+	<dyn_variable name="sid" re="&lt;stream:stream id=&quot;(.*)&quot; xmlns:stream"/>
+        <jabber type="connect" ack="local"></jabber>
+      </request>
+
+      <thinktime value="2"></thinktime>
+
+      <transaction name="auth_digest">
+        <request>
+          <jabber type="auth_get" ack="local"></jabber>
+        </request>
+        <request subst="true"> <jabber type="auth_set_digest" ack="local"></jabber>  </request>
+      </transaction>
+     </session>
+   </sessions>
+ </tsung>
